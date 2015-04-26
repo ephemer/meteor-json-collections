@@ -11,14 +11,14 @@ Plugin.registerSourceHandler(fileExtension, function (compileStep) {
 	// Read the JSON data from our file (make sure it validates):
 
 	try {
-		var songJSON = compileStep.read().toString('utf8');
-		var songData = JSON.parse(songJSON);
+		var jsonString = compileStep.read().toString('utf8');
+		var jsonAsObject = JSON.parse(jsonString);
 	} catch (e) {
-		songData = null;
+		jsonAsObject = null;
 	}
 
 	// If there was an error parsing the JSON, bail out
-	if (!songData) {
+	if (!jsonAsObject) {
 		compileStep.error({
 			sourcePath: compileStep.inputPath,
 			message: "Error parsing the JSON data to put into your collection"
@@ -44,11 +44,11 @@ Plugin.registerSourceHandler(fileExtension, function (compileStep) {
 	if (collectionName.indexOf('.') !== 0) {
 		// No collection name included in file path, fail with the following error:
 		compileStep.error({
-        	sourcePath: compileStep.inputPath,
-        	message: "You need to name the collection you want to add your JSON to."
-        		   + "\n\tUse the format __filename.collection_name.collection.json__"
-      	});
-      	return;
+			sourcePath: compileStep.inputPath,
+			message: "You need to name the collection you want to add your JSON to."
+				   + "\n\tUse the format __filename.collection_name.collection.json__"
+		});
+		return;
 	}
 
 
@@ -60,7 +60,7 @@ Plugin.registerSourceHandler(fileExtension, function (compileStep) {
 		"if (typeof JSONCollections" + collectionName + " !== 'object') {",
 		"	JSONCollections" + collectionName + " = new Mongo.Collection(null);",
 		"}",
-		"JSONCollections" + collectionName + ".insert(" + songJSON + ");"
+		"JSONCollections" + collectionName + ".insert(" + jsonString + ");"
 	].join('\n');
 
 
