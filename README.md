@@ -1,4 +1,4 @@
-#json-collections
+# json-collections
 
 A simple meteor package that hooks into the bundler.
 
@@ -7,8 +7,9 @@ A simple meteor package that hooks into the bundler.
 - Access the data like this `var MyCollection = JSONCollections._collection_name`
 - Then just use normal Mongo commands: `MyCollection.find().fetch()`
 
+You will be able to edit the data locally via `MyCollection.update()` on the client, but it won't sync to the server or update your `.json` files.
 
-## Troubleshooting
+#### Troubleshooting
 
 If you're getting the error that `JSONCollections is undefined`, try putting your code in a `Meteor.startup()` block:
 
