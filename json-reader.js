@@ -59,16 +59,24 @@ Plugin.registerSourceHandler(fileExtension, function (compileStep) {
 		"if (typeof JSONCollections !== 'object') JSONCollections = {};",
 		"if (typeof JSONCollections" + collectionName + " !== 'object') {",
 		"	JSONCollections" + collectionName + " = new Mongo.Collection(null);",
-		"}",
-		"JSONCollections" + collectionName + ".insert(" + jsonString + ");"
-	].join('\n');
+		"}"
+	];
 
+	if (jsonAsObject.length) { // array
+		jsonAsObject.forEach(addToOutputArray);
+	} else {
+		addToOutputArray(jsonAsObject);
+	}
+
+	function addToOutputArray(obj) {
+		output.push("JSONCollections" + collectionName + ".insert(" + JSON.stringify(obj) + ");");
+	}
 
 	// Add it to the app bundle:
 	compileStep.addJavaScript({
 		path: basename + "." + fileExtension,
 		sourcePath: compileStep.inputPath,
-		data: output
+		data: output.join('\n')
 	});
 
 });
